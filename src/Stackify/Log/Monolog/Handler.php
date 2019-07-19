@@ -17,10 +17,10 @@ class Handler extends AbstractHandler
      */
     private $transport;
 
-    public function __construct($appName, $environmentName = null, TransportInterface $transport = null, $level = Logger::DEBUG, $bubble = true)
+    public function __construct($appName, $environmentName = null, TransportInterface $transport = null, $logServerVariables = false, $level = Logger::DEBUG, $bubble = true)
     {
         parent::__construct($level, $bubble);
-        $messageBuilder = new MessageBuilder('Stackify Monolog v.2.0', $appName, $environmentName);
+        $messageBuilder = new MessageBuilder('Stackify Monolog v.1.0', $appName, $environmentName, $logServerVariables);
         if (null === $transport) {
             $transport = new AgentTransport();
         }
@@ -31,7 +31,7 @@ class Handler extends AbstractHandler
     /**
      * {@inheritdoc}
      */
-    public function handle(array $record): bool
+    public function handle(array $record)
     {
         if (!$this->isHandling($record)) {
             return false;
@@ -46,9 +46,10 @@ class Handler extends AbstractHandler
     /**
      * {@inheritdoc}
      */
-    public function close(): void
+    public function close()
     {
         parent::close();
         $this->transport->finish();
     }
+
 }
